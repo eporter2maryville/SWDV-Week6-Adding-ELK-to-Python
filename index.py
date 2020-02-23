@@ -3,30 +3,42 @@
 #Adding ELK to a Python Application
 
 #Placeholder for import
+import socket
 import logging
 import logstash
 import sys
 import time
 
-#creating logger
-pythonELKLogger = logging.getLogger('python-logstash-logger')
-pythonELKLogger.setLevel(logging.INFO)
-pythonELKLogger.addHandler(logstash.LogstashHandler('34.201.47.23', 5959, version=1))
 
-pythonELKLogger.error('python-logstash: test logstash error message.')
-pythonELKLogger.info('python-logstash: test logstash info message.')
-pythonELKLogger.warning('python-logstash: test logstash warning message.')
+"""s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)            # Create a socket object
+host = '100.27.32.226'    
+port = 5959
+s.connect((host, port))"""
 
-#Add extra field to logstash
+#Creating Logger
+test_logger = logging.getLogger('python-logstash-logger')
+test_logger.setLevel(logging.INFO)
+test_logger.addHandler(logstash.LogstashHandler('100.27.32.226' , 5959, version=1))
+#test_logger.addHandler(logstash.TCPLogstashHandler('100.27.32.226' , 5010, version=1))
+
+#Test Logger Info
+"""
+test_logger.error('python-logstash: test logstash error message.')
+test_logger.info('python-logstash: test logstash info message.')
+test_logger.warning('python-logstash: test logstash warning message.')
+
+
+# add extra field to logstash message
 extra = {
     'test_string': 'python version: ' + repr(sys.version_info),
     'test_boolean': True,
     'test_dict': {'a': 1, 'b': 'c'},
     'test_float': 1.23,
-    'test_integer': 126,
-    'test_list': [1,2,3],
+    'test_integer': 123,
+    'test_list': [1, 2, '3'],
 }
-pythonELKLogger.info('python-logstash: test extra fields', extra=extra)
+test_logger.info('python-logstash: test extra fields', extra=extra)
+"""
 
 #Input class
 class whoAreYou:
@@ -36,9 +48,19 @@ class whoAreYou:
         self.age = age
 
 #Get user input
-firstName = input("What is your first name? ")
-lastName = input("What is your last name? ")
-age = input("How old are you? ")
+firstName = raw_input("What is your first name? ")
+lastName = raw_input("What is your last name? ")
+age = raw_input("How old are you? ")
+
+#Send inputs to log
+userInputLog = {
+    'firstNameLog_string': firstName,
+    'lastNameLog_string': lastName,
+    'ageLog_string': age,
+}
+test_logger.info('python-logstash: User input', extra=userInputLog)
+
+
 user = whoAreYou(firstName, lastName, age)
 
 #print greeting
